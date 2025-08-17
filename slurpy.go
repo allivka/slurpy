@@ -6,11 +6,14 @@ import (
 )
 
 func main() {
-
-	result, err := formatter.BasicFormat(`1 +  2 + 
+	
+	src := `1 +  2 + 
 	3 + 4 \
+	
 	+ 4    + 5 +6
-	`)
+	`
+	
+	result, err := formatter.Format(src)
 	if err == nil {
 		fmt.Println(result)
 		return
