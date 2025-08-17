@@ -6,16 +6,18 @@ import (
 )
 
 func main() {
-	
-	src := `1 +  2 + 
+
+	src := `11++  22 + 
 	3 + 4 \
 	
-	+ 4    + 5 +6
+	+ 4    + 55 +66
 	`
-	
-	result, err := formatter.Format(src)
+
+	result, err := formatter.WordsFromString(src)
 	if err == nil {
-		fmt.Println(result)
+		for _, v := range result {
+			fmt.Println(v)
+		}
 		return
 	}
 
