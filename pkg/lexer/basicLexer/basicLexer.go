@@ -1,7 +1,7 @@
 package basiclexer
 
 import (
-	fmter "github.com/allivka/slurpy/pkg/formatter"
+	"github.com/allivka/slurpy/pkg/formatter"
 )
 
 type Keyword interface {
@@ -10,5 +10,5 @@ type Keyword interface {
 
 type Keywords = map[string]Keyword
 
-func Lex(src fmter.Words) {
+func Lex(src formatter.WordSlice) {
 }

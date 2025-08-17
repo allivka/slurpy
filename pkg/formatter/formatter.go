@@ -3,16 +3,27 @@ package formatter
 import (
 	"fmt"
 	"strings"
-	unc "unicode"
+	"unicode"
 )
 
-var operatorRunes = "+-"
+var operatorRunes = "+-*/%"
 
-type Words = []string
+type WordSlice = []string
 
-func Format(src string) (string, error) {
+type lineSlice = []string
 
-	t := strings.Split(src, "\n")
+func clearComments(src string) (result lineSlice) {
+	
+	for _, line := range strings.Split(src, "\n") {
+		if !strings.HasPrefix(strings.TrimSpace(line), `//`) {
+			result = append(result, line)
+		}
+	}
+	
+	return
+}
+
+func Format(t lineSlice) (lineSlice, error) {
 
 	lines := []string{}
 
@@ -40,16 +51,18 @@ func Format(src string) (string, error) {
 		}
 
 		if i == len(lines)-1 {
-			return "", fmt.Errorf("No line for concatenation with \\ operator at line %d", i+1)
+			return nil, fmt.Errorf("No line for concatenation with \\ operator at line %d", i+1)
 		}
 
 		lines[i+1] = strings.Join(strings.Fields(strings.TrimSpace(string(line[:len(line)-1])+lines[i+1])), " ")
 	}
-
-	return strings.TrimSpace(result), nil
+	
+	result = strings.TrimSpace(result)
+	
+	return strings.Split(result, "\n"), nil
 }
 
-func separateWords(word string) (words Words) {
+func separateWords(word string) (words WordSlice) {
 	
 	const (
 		digit = iota
@@ -58,13 +71,13 @@ func separateWords(word string) (words Words) {
 		unknown
 	)
 	
-	type typeType = int
+	type runeType = int
 	
-	getType := func(r rune) typeType {
+	getType := func(r rune) runeType {
 		switch {
 			case strings.Contains(operatorRunes, string(r)): return op
-			case unc.IsDigit(r): return digit
-			case unc.IsLetter(r): return digit
+			case unicode.IsDigit(r): return digit
+			case unicode.IsLetter(r): return letter
 			default: return unknown
 		}
 	}
@@ -72,7 +85,7 @@ func separateWords(word string) (words Words) {
 	runes := []rune(word)
 	
 	var (
-		lastType typeType = getType(runes[0])
+		lastType runeType = getType(runes[0])
 	
 		lastIdx int = 0
 	)
@@ -80,6 +93,7 @@ func separateWords(word string) (words Words) {
 	for i, v := range runes {
 		if getType(v) == lastType {continue}
 		words = append(words, string(runes[lastIdx:i]))
+		lastType = getType(v)
 		lastIdx = i
 	}
 	
@@ -88,16 +102,16 @@ func separateWords(word string) (words Words) {
 	return
 }
 
-func WordsFromString(src string) (Words, error) {
-	src, err := Format(src)
+func WordsFromSrcString(src string) (WordSlice, error) {
+	
+	
+	lines, err := Format(clearComments(src))
 	
 	if err != nil {
-		return Words{}, err
+		return WordSlice{}, err
 	}
 	
-	lines := strings.Split(src, "\n")
-	
-	var buff = Words{}
+	var buff = WordSlice{}
 	
 	for _, line := range lines {
 		for _, word := range strings.Fields(line) {
@@ -106,7 +120,7 @@ func WordsFromString(src string) (Words, error) {
 		buff = append(buff, ";")
 	}
 	
-	words := make(Words, len(buff))
+	words := make(WordSlice, len(buff))
 	
 	copy(words, buff)
 	
