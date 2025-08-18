@@ -3,10 +3,8 @@ package formatter
 import (
 	"fmt"
 	"strings"
-	"unicode"
+	rns "github.com/allivka/slurpy/pkg/runes"
 )
-
-var operatorRunes = "+-*/%"
 
 type WordSlice = []string
 
@@ -64,36 +62,18 @@ func Format(t lineSlice) (lineSlice, error) {
 
 func separateWords(word string) (words WordSlice) {
 	
-	const (
-		digit = iota
-		letter
-		op
-		unknown
-	)
-	
-	type runeType = int
-	
-	getType := func(r rune) runeType {
-		switch {
-			case strings.Contains(operatorRunes, string(r)): return op
-			case unicode.IsDigit(r): return digit
-			case unicode.IsLetter(r): return letter
-			default: return unknown
-		}
-	}
-	
 	runes := []rune(word)
 	
 	var (
-		lastType runeType = getType(runes[0])
+		lastType rns.RuneType = rns.GetRuneType(runes[0])
 	
 		lastIdx int = 0
 	)
 	
 	for i, v := range runes {
-		if getType(v) == lastType {continue}
+		if rns.GetRuneType(v) == lastType {continue}
 		words = append(words, string(runes[lastIdx:i]))
-		lastType = getType(v)
+		lastType =rns.GetRuneType(v)
 		lastIdx = i
 	}
 	
