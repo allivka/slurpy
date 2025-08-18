@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 	rns "github.com/allivka/slurpy/pkg/runes"
+	wp "github.com/allivka/slurpy/pkg/words"
 )
-
-type WordSlice = []string
 
 type lineSlice = []string
 
@@ -60,7 +59,7 @@ func Format(t lineSlice) (lineSlice, error) {
 	return strings.Split(result, "\n"), nil
 }
 
-func separateWords(word string) (words WordSlice) {
+func separateWords(word string) (words wp.WordSlice) {
 	
 	runes := []rune(word)
 	
@@ -82,16 +81,16 @@ func separateWords(word string) (words WordSlice) {
 	return
 }
 
-func WordsFromSrcString(src string) (WordSlice, error) {
+func WordsFromSrcString(src string) (wp.WordSlice, error) {
 	
 	
 	lines, err := Format(clearComments(src))
 	
 	if err != nil {
-		return WordSlice{}, err
+		return wp.WordSlice{}, err
 	}
 	
-	var buff = WordSlice{}
+	var buff = wp.WordSlice{}
 	
 	for _, line := range lines {
 		for _, word := range strings.Fields(line) {
@@ -100,7 +99,7 @@ func WordsFromSrcString(src string) (WordSlice, error) {
 		buff = append(buff, ";")
 	}
 	
-	words := make(WordSlice, len(buff))
+	words := make(wp.WordSlice, len(buff))
 	
 	copy(words, buff)
 	

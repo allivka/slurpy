@@ -14,7 +14,7 @@ const (
 )
 
 func init() {
-	for k, _ := range operators.OperatorTokens {
+	for k := range operators.OperatorTokens {
 		operatorRunes += k
 	}
 }

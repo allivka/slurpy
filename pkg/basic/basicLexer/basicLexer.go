@@ -3,6 +3,7 @@ package basiclexer
 import (
 	"fmt"
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
+	"github.com/allivka/slurpy/pkg/words"
 )
 
 
@@ -10,7 +11,7 @@ type TokenDetector interface {
 	TokenFromWord(word string) (bts.Token, error)
 }
 
-func Lex(src []string, detector TokenDetector) (result bts.TokenSlice, err error) {
+func Lex(src words.WordSlice, detector TokenDetector) (result bts.TokenSlice, err error) {
 	
 	result = make(bts.TokenSlice, len(src))
 	

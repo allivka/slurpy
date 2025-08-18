@@ -34,7 +34,7 @@ func tokenizer(word string) (token bts.Token, err error) {
 		return token, nil
 	}
 	
-	``
+	
 }
 
 func Lex(words []string) {
