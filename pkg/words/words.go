@@ -40,6 +40,12 @@ func GetWordType(word string) (result WordType, err error) {
 		return Float, nil
 	}
 	
+	_, err = strconv.ParseBool(word)
+	
+	if err == nil {
+		return Boolean, nil
+	}
+	
 	runes := []rune(word)
 	
 	if unicode.IsDigit(runes[0]) {

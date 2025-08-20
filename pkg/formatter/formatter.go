@@ -3,7 +3,6 @@ package formatter
 import (
 	"fmt"
 	"strings"
-	rns "github.com/allivka/slurpy/pkg/runes"
 	wp "github.com/allivka/slurpy/pkg/words"
 )
 
@@ -59,24 +58,45 @@ func Format(t lineSlice) (lineSlice, error) {
 	return strings.Split(result, "\n"), nil
 }
 
-func separateWords(word string) (words wp.WordSlice) {
+func separateWords(word string) (words wp.WordSlice, err error) {
 	
 	runes := []rune(word)
 	
-	var (
-		lastType rns.RuneType = rns.GetRuneType(runes[0])
+	lastType, err := wp.GetWordType(string(runes[0]))
 	
-		lastIdx int = 0
-	)
-	
-	for i, v := range runes {
-		if rns.GetRuneType(v) == lastType {continue}
-		words = append(words, string(runes[lastIdx:i]))
-		lastType =rns.GetRuneType(v)
-		lastIdx = i
+	if err != nil {
+		return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
 	}
 	
-	words = append(words, string(runes[lastIdx:]))
+	
+	var (
+		currentType wp.WordType
+		subWord string
+		lastIdx int
+	)
+	
+	for i := 1; i < len(runes) + 1; i++ {
+		
+		subWord = string(runes[lastIdx:i+1])
+		
+		currentType, _ = wp.GetWordType(subWord)
+		
+		
+		// fmt.Printf("Subword: %s type: %d\n", subWord, currentType)
+		
+		
+		if currentType == wp.Bracket || currentType != lastType{
+			words = append(words, string(runes[lastIdx:i]))
+			lastIdx = i
+			if i < len(runes) { lastType, err = wp.GetWordType(string(runes[i])) }
+			
+			if err != nil {
+				return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+			}
+			// fmt.Println(words)
+		}
+		
+	}
 	
 	return
 }
@@ -94,7 +114,13 @@ func WordsFromSrcString(src string) (wp.WordSlice, error) {
 	
 	for _, line := range lines {
 		for _, word := range strings.Fields(line) {
-			buff = append(buff, separateWords(word)...)
+			subWords, err := separateWords(word)
+			
+			if err != nil {
+				return nil, err
+			}
+			
+			buff = append(buff, subWords...)
 		}
 		buff = append(buff, ";")
 	}
