@@ -3,37 +3,85 @@ package tokens
 import (
 	"strconv"
 	"fmt"
+	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 	wp "github.com/allivka/slurpy/pkg/words"
 )
 
 
-
 type Identificator struct {
+	bts.BasicToken
 	value string
 }
 
-func(s *Identificator) NewFromWord(word string) error {
+func(s Identificator) NewFromWord(word string) (bts.Token, error) {
 	
 	wt, err := wp.GetWordType(word);
 	
 	if err == nil && wt == wp.Identificator {
-		s.value = word
-		return nil
+		t, _ := bts.BasicToken{}.NewFromWord(word)
+		return Identificator{
+			value: word,
+			BasicToken: t.(bts.BasicToken),
+		}, nil
 	}
 	
-	return fmt.Errorf("Failed creating new Identificator token from word '%s': %w", word, err)
+	return Identificator{}, fmt.Errorf("Failed creating new identificator token from word '%s': %w", word, err)
 }
 
-type IntLiteral struct {
+type Integer struct {
+	bts.BasicToken
 	value int64
 }
 
-func(i *IntLiteral) NewFromWord(word string) error {
+func(i Integer) NewFromWord(word string) (bts.Token, error) {
 	temp, err := strconv.ParseInt(word, 10, 64)
 	if err != nil {
-		return fmt.Errorf("Failed creating new Identificator token from word '%s': %w", word, err)
+		return Integer{}, fmt.Errorf("Failed creating new integer token from word '%s': %w", word, err)
 	}
-	i.value = temp
 	
-	return nil
+	t, _ := bts.BasicToken{}.NewFromWord(word)
+
+	return Integer {
+		value: temp,
+		BasicToken: t.(bts.BasicToken),
+	}, nil
 }
+
+type Float struct {
+	bts.BasicToken
+	value float64
+}
+
+func(f Float) NewFromWord(word string) (bts.Token, error) {
+	temp, err := strconv.ParseFloat(word, 64)
+	if err != nil {
+		return Float{}, fmt.Errorf("Failed creating new float token from word '%s': %w", word, err)
+	}
+	
+	t, _ := bts.BasicToken{}.NewFromWord(word)
+	
+	return Float {
+		value: temp,
+		BasicToken: t.(bts.BasicToken),
+	}, nil
+}
+
+type Boolean struct {
+	bts.BasicToken
+	value bool
+}
+
+func(b Boolean) NewFromWord(word string) (bts.Token, error) {
+	temp, err := strconv.ParseBool(word)
+	if err != nil {
+		return Boolean{}, fmt.Errorf("Failed creating new boolean token from word '%s': %w", word, err)
+	}
+	
+	t, _ := bts.BasicToken{}.NewFromWord(word)
+	
+	return Boolean {
+		value: temp,
+		BasicToken: t.(bts.BasicToken),
+	}, nil
+}
+

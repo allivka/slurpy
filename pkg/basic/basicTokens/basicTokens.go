@@ -4,11 +4,27 @@ import (
 )
 
 type Token interface {
-	NewFromWord(string) error
+	NewFromWord(string) (Token, error)
+	GetWord() string
 }
 
-type UncreatableToken struct {}
-func(UncreatableToken) NewFromWord(string) error{return nil}
+type BasicToken struct {
+	Word string
+}
+
+func(token BasicToken) NewFromWord(word string) (Token, error) {
+	token.Word = word
+	return token, nil
+}
+
+func(token BasicToken) GetWord() string {
+	return token.Word
+}
+
+func InitToken(token Token, word string) Token {
+	token.NewFromWord(word)
+	return token
+}
 
 type TokenSlice = []Token
 

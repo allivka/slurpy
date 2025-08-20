@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/allivka/slurpy/pkg/formatter"
+	"github.com/allivka/slurpy/pkg/lexer"
 )
 
 func main() {
@@ -13,14 +14,25 @@ func main() {
 	+ 4    + 55 ++66
 	`
 
-	result, err := formatter.WordsFromSrcString(src)
-	if err == nil {
-		for _, v := range result {
-			fmt.Println(v)
-		}
+	formatted, err := formatter.WordsFromSrcString(src)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-
-	fmt.Println(err)
+	
+	fmt.Println(formatted)
+	
+	lexed, err := lexer.Lex(formatted)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	
+	
+	for _, token := range lexed {
+		fmt.Printf("%+v\t%s\n", token, token.GetWord())
+	}
+	
+	
 
 }
