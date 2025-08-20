@@ -2,19 +2,26 @@ package tokens
 
 import (
 	"strconv"
+	"fmt"
+	wp "github.com/allivka/slurpy/pkg/words"
 )
 
-type UncreatableToken struct {}
-func(UncreatableToken) NewFromWord(string) error{return nil}
 
-type StringName struct {
+
+type Identificator struct {
 	value string
 }
 
-func(s *StringName) NewFromWord(word string) error {
-	s.value = word
+func(s *Identificator) NewFromWord(word string) error {
 	
-	return nil
+	wt, err := wp.GetWordType(word);
+	
+	if err == nil && wt == wp.Identificator {
+		s.value = word
+		return nil
+	}
+	
+	return fmt.Errorf("Failed creating new Identificator token from word '%s': %w", word, err)
 }
 
 type IntLiteral struct {
@@ -24,7 +31,7 @@ type IntLiteral struct {
 func(i *IntLiteral) NewFromWord(word string) error {
 	temp, err := strconv.ParseInt(word, 10, 64)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed creating new Identificator token from word '%s': %w", word, err)
 	}
 	i.value = temp
 	

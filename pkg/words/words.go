@@ -70,7 +70,7 @@ func GetWordType(word string) (result WordType, err error) {
 	isIdentificator := true
 	
 	for _, v:= range runes {
-		if unicode.IsDigit(v) || unicode.IsLetter(v) || v == '_' {continue}
+		if rp.GetRuneType(v) == rp.IdentificatorRune {continue}
 		isIdentificator = false
 		break
 	}

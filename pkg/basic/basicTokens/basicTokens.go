@@ -7,6 +7,9 @@ type Token interface {
 	NewFromWord(string) error
 }
 
+type UncreatableToken struct {}
+func(UncreatableToken) NewFromWord(string) error{return nil}
+
 type TokenSlice = []Token
 
 type TokenMap = map[string]Token
@@ -23,3 +26,4 @@ func MergeTokenMaps(overlays ...TokenMap) (result TokenMap) {
 	
 	return
 }
+

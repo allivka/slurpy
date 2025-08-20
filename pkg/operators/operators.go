@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"github.com/allivka/slurpy/pkg/tokens"
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 )
 
@@ -23,45 +22,45 @@ var BracketTokens = bts.TokenMap {
 }
 
 type Plus struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type Minus struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type Multiply struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type Divide struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type Eol struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketCircleOpen struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketCircleClose struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketSquareOpen struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketSquareClose struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketFigureOpen struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
 
 type BracketFigureClose struct {
-	tokens.UncreatableToken
+	bts.UncreatableToken
 }
