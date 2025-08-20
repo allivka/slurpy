@@ -6,9 +6,11 @@ import (
 )
 
 var OperatorTokens = bts.TokenMap {
-	"+": OperatorPlus{},
-	"-": OperatorMinus{},
-	";": OperatorMinus{},
+	"+": Plus{},
+	"-": Minus{},
+	"*": Multiply{},
+	"/": Divide{},
+	";": Eol{},
 }
 
 var BracketTokens = bts.TokenMap {
@@ -20,15 +22,23 @@ var BracketTokens = bts.TokenMap {
 	"}": BracketFigureClose{},
 }
 
-type OperatorPlus struct {
+type Plus struct {
 	tokens.UncreatableToken
 }
 
-type OperatorMinus struct {
+type Minus struct {
 	tokens.UncreatableToken
 }
 
-type OperatorEol struct {
+type Multiply struct {
+	tokens.UncreatableToken
+}
+
+type Divide struct {
+	tokens.UncreatableToken
+}
+
+type Eol struct {
 	tokens.UncreatableToken
 }
 

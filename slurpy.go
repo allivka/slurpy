@@ -7,10 +7,10 @@ import (
 
 func main() {
 
-	src := `11++  22 + 
+	src := `11++  22 + --a++b *1a
 	3 + 4 \
 	//3 -3 323 322234234 32423423 123123 24
-	+ 4    + 55 +66
+	+ 4    + 55 ++66
 	`
 
 	result, err := formatter.WordsFromSrcString(src)
