@@ -58,7 +58,7 @@ func Format(t lineSlice) (lineSlice, error) {
 	return strings.Split(result, "\n"), nil
 }
 
-func separateWords(word string) (words wp.WordSlice, err error) {
+func separateWords(word string) (result wp.WordSlice, err error) {
 	
 	runes := []rune(word)
 	
@@ -73,7 +73,9 @@ func separateWords(word string) (words wp.WordSlice, err error) {
 		currentType wp.WordType
 		subWord string
 		lastIdx int
+		words wp.WordSlice
 	)
+	
 	
 	for i := 1; i < len(runes) + 1; i++ {
 		
@@ -81,11 +83,7 @@ func separateWords(word string) (words wp.WordSlice, err error) {
 		
 		currentType, _ = wp.GetWordType(subWord)
 		
-		
-		// fmt.Printf("Subword: %s type: %d\n", subWord, currentType)
-		
-		
-		if currentType == wp.Bracket || currentType != lastType{
+		if currentType == wp.Bracket || currentType != lastType {
 			words = append(words, string(runes[lastIdx:i]))
 			lastIdx = i
 			if i < len(runes) { lastType, err = wp.GetWordType(string(runes[i])) }
@@ -93,9 +91,45 @@ func separateWords(word string) (words wp.WordSlice, err error) {
 			if err != nil {
 				return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
 			}
-			// fmt.Println(words)
 		}
 		
+	}
+	
+
+	var v string
+	
+	for i := 0; i < len(words); i++ {
+		if i == len(words) - 1 {
+			result = append(result, words[i])
+			break
+		}
+		
+		v = words[i]
+		
+		currentType, err := wp.GetWordType(string(v))
+		
+		if err != nil {
+			return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+		}
+		
+		nextType, err := wp.GetWordType(string(words[i + 1]))
+		
+		if err != nil {
+			return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+		}
+		
+		for j := i + 1; j < len(words) && currentType != wp.Operator && nextType != wp.Operator && currentType != wp.Bracket && nextType != wp.Bracket; j++ {
+			nextType, err = wp.GetWordType(words[j])
+			
+			if err != nil {
+				return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+			}
+			
+			v += words[j]
+			i++
+		}
+		
+		result = append(result, v)
 	}
 	
 	return
@@ -126,6 +160,12 @@ func WordsFromSrcString(src string) (wp.WordSlice, error) {
 	}
 	
 	words := make(wp.WordSlice, len(buff))
+	
+	err = wp.ValidateWords(buff)
+	
+	if err != nil {
+		return nil, fmt.Errorf("Failed retrieving words from source: %w", err)
+	}
 	
 	copy(words, buff)
 	

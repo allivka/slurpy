@@ -12,15 +12,30 @@ type WordSlice = []string
 type WordType = int
 
 const (
-	Integer = iota
+	Empty = iota
+	Integer
 	Float
 	Boolean
 	Identificator
 	Operator
 	Bracket
 	Invalid
-	Empty
 )
+
+func ValidateWords(words WordSlice) (err error) {
+	
+	var wt WordType
+	
+	for _, word := range words {
+		wt, err = GetWordType(word)
+		
+		if wt == Invalid || wt == Empty || err != nil {
+			return fmt.Errorf("Detected invalid word '%s': %w", word, err)
+		}
+	}
+	
+	return nil
+}
 
 func GetWordType(word string) (result WordType, err error) {
 	
