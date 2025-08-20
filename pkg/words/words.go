@@ -17,6 +17,7 @@ const (
 	Boolean
 	Identificator
 	Operator
+	Bracket
 	Invalid
 	Empty
 )
@@ -67,6 +68,10 @@ func GetWordType(word string) (result WordType, err error) {
 	
 	if isOperator {
 		return Operator, nil
+	}
+	
+	if len(runes) == 1 && rp.GetRuneType(runes[0]) == rp.Bracket {
+		return Bracket, nil
 	}
 	
 	return Invalid, fmt.Errorf("Word '%s' is invalid", word)
