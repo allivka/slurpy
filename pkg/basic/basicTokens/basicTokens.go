@@ -21,9 +21,8 @@ func(token BasicToken) GetWord() string {
 	return token.Word
 }
 
-func InitToken(token Token, word string) Token {
-	token.NewFromWord(word)
-	return token
+func InitToken(token Token, word string) (Token, error) {
+	return token.NewFromWord(word)
 }
 
 type TokenSlice = []Token

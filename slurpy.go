@@ -30,7 +30,7 @@ func main() {
 	
 	
 	for _, token := range lexed {
-		fmt.Printf("%+v\t%s\n", token, token.GetWord())
+		fmt.Printf("%+v\n", token)
 	}
 	
 	

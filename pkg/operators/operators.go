@@ -30,7 +30,7 @@ var TokenMaps = []bts.TokenMap{OperatorTokens, BracketTokens}
 func init() {
 	for _, tm := range TokenMaps {
 		for k, v := range tm {
-			tm[k] = bts.InitToken(v, k)
+			tm[k], _ = bts.InitToken(v, k)
 		}
 	}
 }

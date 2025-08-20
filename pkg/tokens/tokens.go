@@ -10,7 +10,6 @@ import (
 
 type Identificator struct {
 	bts.BasicToken
-	value string
 }
 
 func(s Identificator) NewFromWord(word string) (bts.Token, error) {
@@ -19,10 +18,7 @@ func(s Identificator) NewFromWord(word string) (bts.Token, error) {
 	
 	if err == nil && wt == wp.Identificator {
 		t, _ := bts.BasicToken{}.NewFromWord(word)
-		return Identificator{
-			value: word,
-			BasicToken: t.(bts.BasicToken),
-		}, nil
+		return Identificator{ BasicToken: t.(bts.BasicToken) }, nil
 	}
 	
 	return Identificator{}, fmt.Errorf("Failed creating new identificator token from word '%s': %w", word, err)
