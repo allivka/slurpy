@@ -62,22 +62,4 @@ func(f Float) NewFromWord(word string) (bts.Token, error) {
 	}, nil
 }
 
-type Boolean struct {
-	bts.BasicToken
-	value bool
-}
-
-func(b Boolean) NewFromWord(word string) (bts.Token, error) {
-	temp, err := strconv.ParseBool(word)
-	if err != nil {
-		return Boolean{}, fmt.Errorf("Failed creating new boolean token from word '%s': %w", word, err)
-	}
-	
-	t, _ := bts.BasicToken{}.NewFromWord(word)
-	
-	return Boolean {
-		value: temp,
-		BasicToken: t.(bts.BasicToken),
-	}, nil
-}
 

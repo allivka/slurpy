@@ -15,7 +15,6 @@ const (
 	Empty = iota
 	Integer
 	Float
-	Boolean
 	Identificator
 	Operator
 	Bracket
@@ -55,11 +54,6 @@ func GetWordType(word string) (result WordType, err error) {
 		return Float, nil
 	}
 	
-	_, err = strconv.ParseBool(word)
-	
-	if err == nil {
-		return Boolean, nil
-	}
 	
 	runes := []rune(word)
 	

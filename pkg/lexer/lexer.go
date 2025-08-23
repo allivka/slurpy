@@ -46,7 +46,6 @@ func(tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 		case wp.Integer: token, _ = bts.InitToken(tokens.Integer{}, word)
 		case wp.Float: token, _ = bts.InitToken(tokens.Float{}, word)
 		case wp.Identificator: token, _ = bts.InitToken(tokens.Identificator{}, word)
-		case wp.Boolean: token, _ = bts.InitToken(tokens.Boolean{}, word)
 	
 		default: return nil, fmt.Errorf("Failed tokenizing word '%s' is either unknown or invalid or empty: %w", word, err)
 		
