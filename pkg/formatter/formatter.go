@@ -83,7 +83,7 @@ func separateWords(word string) (result wp.WordSlice, err error) {
 		
 		currentType, _ = wp.GetWordType(subWord)
 		
-		if currentType == wp.Bracket || currentType != lastType {
+		if currentType == wp.SingleOperator || currentType != lastType {
 			words = append(words, string(runes[lastIdx:i]))
 			lastIdx = i
 			if i < len(runes) { lastType, err = wp.GetWordType(string(runes[i])) }
@@ -118,7 +118,7 @@ func separateWords(word string) (result wp.WordSlice, err error) {
 			return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
 		}
 		
-		for j := i + 1; j < len(words) && currentType != wp.Operator && nextType != wp.Operator && currentType != wp.Bracket && nextType != wp.Bracket; j++ {
+		for j := i + 1; j < len(words) && currentType != wp.Operator && nextType != wp.Operator && currentType != wp.SingleOperator && nextType != wp.SingleOperator; j++ {
 			nextType, err = wp.GetWordType(words[j])
 			
 			if err != nil {

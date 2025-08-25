@@ -27,16 +27,6 @@ var SingleOperatorTokens = bts.TokenMap {
 	"\"": DoubleQuote{},
 }
 
-var TokenMaps = []bts.TokenMap{OperatorTokens, SingleOperatorTokens}
-
-func init() {
-	for _, tm := range TokenMaps {
-		for k, v := range tm {
-			bts.InitToken(tm[k], k)
-		}
-	}
-}
-
 type Plus struct {
 	bts.BasicToken
 }

@@ -14,7 +14,7 @@ import (
 var SpecifiedTokens bts.TokenMap
 
 func init() {
-	SpecifiedTokens = bts.MergeTokenMaps(operators.OperatorTokens, operators.BracketTokens)
+	SpecifiedTokens = bts.MergeTokenMaps(operators.OperatorTokens, operators.SingleOperatorTokens)
 }
 
 type tokenizer struct {}
@@ -43,15 +43,15 @@ func(tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 	}
 	
 	switch wordType {
-		case wp.Integer: token, _ = bts.InitToken(tokens.Integer{}, word)
-		case wp.Float: token, _ = bts.InitToken(tokens.Float{}, word)
-		case wp.Identificator: token, _ = bts.InitToken(tokens.Identificator{}, word)
+		case wp.Integer: token = tokens.Integer{}
+		case wp.Float: token = tokens.Float{}
+		case wp.Identificator: token = tokens.Identificator{}
 	
 		default: return nil, fmt.Errorf("Failed tokenizing word '%s' is either unknown or invalid or empty: %w", word, err)
 		
 	}
 	
-	
+	bts.InitToken(&token, word)
 	
 	return token, nil
 }

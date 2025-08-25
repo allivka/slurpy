@@ -3,7 +3,6 @@ package runes
 import (
 	"strings"
 	"unicode"
-	"github.com/allivka/slurpy/pkg/operators"
 )
 
 const (
@@ -15,17 +14,8 @@ const (
 	Unknown
 )
 
-func init() {
-	for k := range operators.OperatorTokens {
-		operatorRunes += k
-	}
-	for k := range operators.SingleOperatorTokens {
-		SingleOperatorRunes += k
-	}
-}
-
-var operatorRunes string
-var SingleOperatorRunes string
+var operatorRunes string = `+-*/%;`
+var SingleOperatorRunes string = `(){}[]'"`
 
 type RuneType = int
 
