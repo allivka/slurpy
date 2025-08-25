@@ -16,21 +16,23 @@ var OperatorTokens = bts.TokenMap {
 	";": Eol{},
 }
 
-var BracketTokens = bts.TokenMap {
+var SingleOperatorTokens = bts.TokenMap {
 	"(": BracketCircleOpen{},
 	")": BracketCircleClose{},
 	"[": BracketSquareOpen{},
 	"]": BracketSquareClose{},
 	"{": BracketFigureOpen{},
 	"}": BracketFigureClose{},
+	"'": SingleQuote{},
+	"\"": DoubleQuote{},
 }
 
-var TokenMaps = []bts.TokenMap{OperatorTokens, BracketTokens}
+var TokenMaps = []bts.TokenMap{OperatorTokens, SingleOperatorTokens}
 
 func init() {
 	for _, tm := range TokenMaps {
 		for k, v := range tm {
-			tm[k], _ = bts.InitToken(v, k)
+			bts.InitToken(tm[k], k)
 		}
 	}
 }
@@ -92,5 +94,13 @@ type BracketFigureOpen struct {
 }
 
 type BracketFigureClose struct {
+	bts.BasicToken
+}
+
+type SingleQuote struct {
+	bts.BasicToken
+}
+
+type DoubleQuote struct {
 	bts.BasicToken
 }

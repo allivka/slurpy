@@ -17,7 +17,7 @@ const (
 	Float
 	Identificator
 	Operator
-	Bracket
+	SingleOperator
 	Invalid
 )
 
@@ -85,8 +85,8 @@ func GetWordType(word string) (result WordType, err error) {
 		return Operator, nil
 	}
 	
-	if len(runes) == 1 && rp.GetRuneType(runes[0]) == rp.Bracket {
-		return Bracket, nil
+	if len(runes) == 1 && rp.GetRuneType(runes[0]) == rp.SingleOperator {
+		return SingleOperator, nil
 	}
 	
 	return Invalid, fmt.Errorf("Word '%s' is invalid", word)
