@@ -18,7 +18,7 @@ type Statement interface {
 
 type BasicStatementCreationContext struct {
 	Keyword Keyword
-	parameters map[tp.Identificator]bts.Token
+	parameters map[bts.Token]bts.Token
 	header bts.TokenSlice
 	body []Statement
 }
