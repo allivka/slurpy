@@ -3,7 +3,6 @@ package basicparser
 import (
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 	"fmt"
-	"container/list"
 )
 
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error){ 
@@ -25,32 +24,25 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 		return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v no starting token '%+v' was found", src, startToken, endToken, startToken)
 	}
 	
-	if blockOffset == len(src) {
+	if blockOffset >= len(src) - 1 {
 		return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v no paired ending token '%+v' was found", src, startToken, endToken, endToken)
 	}
 	
-	var bracketStack list.List
-	bracketStack.Init()
-	
-	bracketStack.PushBack(start)
+	var openedCounter = 1
 	
 	for i := blockOffset + 1; i < len(src); i++ {
 		
-		if endToken == startToken && endToken == src[i] {
-			bracketStack.Remove(bracketStack.Back())
-			goto endCheck
+		switch src[i] {
+		case endToken: openedCounter--
+		case startToken: openedCounter++
 		}
 		
-		if (src[i] == startToken || src[i] == endToken) && src[i] != bracketStack.Back().Value {
-			bracketStack.Remove(bracketStack.Back())
-			goto endCheck
-		}
-		
-		bracketStack.PushBack(src[i])
-		
-		endCheck:
-		if bracketStack.Len() == 0 {
+		if openedCounter == 0 {
 			return blockOffset, src[blockOffset:i+1], nil
+		}
+		
+		if openedCounter < 0 {
+			return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v no paired starting token '%+v' was found", src, startToken, endToken, startToken)
 		}
 		
 	}
