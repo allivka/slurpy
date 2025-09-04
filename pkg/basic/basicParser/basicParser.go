@@ -7,8 +7,12 @@ import (
 
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error){ 
 	
-	if len(src) < 2 {
+	if src == nil || len(src) < 2 {
 		return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v as provided block token slice length is less then 2 elements", src, startToken, endToken)
+	}
+	
+	if startToken == nil  || endToken == nil {
+		return 0, nil, fmt.Errorf("Border token cannot be nil")
 	}
 	
 	var (
@@ -16,7 +20,7 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 		start bts.Token
 	)
 	
-	for ; start != startToken; blockOffset++ {
+	for ; start.GetWord() != startToken.GetWord(); blockOffset++ {
 		start = src[blockOffset]
 	}
 	
@@ -32,9 +36,9 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 	
 	for i := blockOffset + 1; i < len(src); i++ {
 		
-		switch src[i] {
-		case endToken: openedCounter--
-		case startToken: openedCounter++
+		switch src[i].GetWord() {
+		case endToken.GetWord(): openedCounter--
+		case startToken.GetWord(): openedCounter++
 		}
 		
 		if openedCounter == 0 {
@@ -48,4 +52,23 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 	}
 	
 	return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v no paired ending token '%+v' was found", src, startToken, endToken, endToken)
+}
+
+func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (result []bts.TokenSlice, err error) {
+	
+	if src == nil {
+		return nil, nil
+	}
+	
+	if separatorTokens == nil {
+		return nil, fmt.Errorf("Separator tokens cannot be nil")
+	}
+	
+	var start int
+	
+	for end := 0; end < len(src); end++ {
+		
+	}
+	
+	return nil, nil
 }
