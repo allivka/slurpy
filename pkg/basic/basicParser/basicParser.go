@@ -3,11 +3,12 @@ package basicparser
 import (
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 	"fmt"
+	"slices"
 )
 
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error){ 
 	
-	if src == nil || len(src) < 2 {
+	if len(src) < 2 {
 		return 0, nil, fmt.Errorf("Failed parsing block of tokens '%+v' in block between %+v and %+v as provided block token slice length is less then 2 elements", src, startToken, endToken)
 	}
 	
@@ -57,7 +58,7 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (result []bts.TokenSlice, err error) {
 	
 	if src == nil {
-		return nil, nil
+		return nil, fmt.Errorf("Source tokens slice cannot be nil")
 	}
 	
 	if separatorTokens == nil {
@@ -66,9 +67,22 @@ func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (
 	
 	var start int
 	
-	for end := 0; end < len(src); end++ {
-		
+	separatorSet := map[string]struct{}{}
+	
+	for _, v := range separatorTokens {
+		separatorSet[v.GetWord()] = struct{}{}
 	}
 	
-	return nil, nil
+	for end := 0; end < len(src); end++ {
+		if _, ok := separatorSet[src[end].GetWord()]; ok {
+			result = append(result, src[start:end])
+			start = end + 1
+		}
+	}
+	
+	if start < len(src) {
+		result = append(result, src[start:])
+	}
+	
+	return result, nil
 }
