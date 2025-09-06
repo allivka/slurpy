@@ -2,14 +2,19 @@ package basicstatements
 
 import (
 	wp "github.com/allivka/slurpy/pkg/words"
-	tp "github.com/allivka/slurpy/pkg/tokens"
+	"github.com/allivka/slurpy/pkg/lexer"
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
+	bps "github.com/allivka/slurpy/pkg/basic/basicParser"
 	"errors"
+	"fmt"
+)
+
+const (
+	StatementParameterTokenOpenWord = '['
+	StatementParameterTokenCloseWord = ']'
 )
 
 type Context = interface{}
-
-type Keyword = tp.Identificator
 
 type Statement interface {
 	Execute(any) (error)
@@ -17,25 +22,42 @@ type Statement interface {
 }
 
 type BasicStatementCreationContext struct {
-	Keyword Keyword
+	identificator bts.Token
 	parameters map[bts.Token]bts.Token
 	header bts.TokenSlice
-	body []Statement
+	body []BasicStatementCreationContext
+	context Context
 }
 
-func TokensToBasicStatementContext(src bts.TokenSlice, defaultKeyword Keyword) (context BasicStatementCreationContext, err error) {
+func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.Token, defaultBodyIdentificator bts.Token, statementIdentificators map[string]bts.Token) (context BasicStatementCreationContext, err error) {
 	if src == nil || len(src) == 0 {
 		return BasicStatementCreationContext{}, errors.New("Invalid src parameter for creation of BasicStatementCreationContext for later statement creation")
 	}
 	
-	var keyword Keyword
-	
-	if src[0].GetWordType() != wp.Identificator {
-		keyword = defaultKeyword
-	} else if keyword, ok := src[0].(Keyword); !ok {
-		return BasicStatementCreationContext{}, errors.New("The first token of src parameter with word type Identificator cannot be represented as identificator(Something unexpected happened)")
+	if defaultIdentificator == nil {
+		return BasicStatementCreationContext{}, errors.New("Default identificator token for statement processing")
 	}
 	
+	if defaultBodyIdentificator == nil {
+		defaultBodyIdentificator = defaultIdentificator
+	}
+	
+	var (
+		identificator bts.Token
+		ok bool
+	)
+	
+	if identificator, ok = statementIdentificators[src[0].GetWord()]; !ok {
+		identificator = defaultIdentificator
+	}
+	
+	context.identificator = identificator
+	
+	offset, parameterSlice, err := bps.ParseBlockBetween(src[1:], lexer.SpecifiedTokens[StatementParameterTokenOpenWord], lexer.SpecifiedTokens[StatementParameterTokenCloseWord])
+	
+	if err != nil {
+		return nil, fmt.Errorf("Failed turning tokens slice into statement creation context, failed parsing statement parameters: %w", err)
+	}
 	
 	return
 }
