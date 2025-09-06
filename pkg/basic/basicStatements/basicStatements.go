@@ -1,4 +1,4 @@
-package ast
+package basicstatements
 
 import (
 	wp "github.com/allivka/slurpy/pkg/words"
@@ -39,3 +39,4 @@ func TokensToBasicStatementContext(src bts.TokenSlice, defaultKeyword Keyword) (
 	
 	return
 }
+

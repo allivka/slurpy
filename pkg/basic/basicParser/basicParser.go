@@ -3,7 +3,6 @@ package basicparser
 import (
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 	"fmt"
-	"slices"
 )
 
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error){ 
