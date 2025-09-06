@@ -9,11 +9,6 @@ import (
 	"fmt"
 )
 
-const (
-	StatementParameterTokenOpenWord = '['
-	StatementParameterTokenCloseWord = ']'
-)
-
 type Context = interface{}
 
 type Statement interface {
@@ -23,13 +18,13 @@ type Statement interface {
 
 type BasicStatementCreationContext struct {
 	identificator bts.Token
-	parameters map[bts.Token]bts.Token
+	parameters bps.Parameters
 	header bts.TokenSlice
 	body []BasicStatementCreationContext
 	context Context
 }
 
-func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.Token, defaultBodyIdentificator bts.Token, statementIdentificators map[string]bts.Token) (context BasicStatementCreationContext, err error) {
+func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.Token, defaultBodyIdentificator bts.Token, defaultParameters bps.Parameters, statementIdentificators map[string]bts.Token) (context BasicStatementCreationContext, err error) {
 	if src == nil || len(src) == 0 {
 		return BasicStatementCreationContext{}, errors.New("Invalid src parameter for creation of BasicStatementCreationContext for later statement creation")
 	}
@@ -53,10 +48,22 @@ func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.
 	
 	context.identificator = identificator
 	
-	offset, parameterSlice, err := bps.ParseBlockBetween(src[1:], lexer.SpecifiedTokens[StatementParameterTokenOpenWord], lexer.SpecifiedTokens[StatementParameterTokenCloseWord])
+	offset, parameterSlice, err := bps.ParseBlockBetween(src[1:], lexer.SpecifiedTokens[string(statementParameterTokenOpenWord)], lexer.SpecifiedTokens[string(statementParameterTokenCloseWord)])
 	
 	if err != nil {
-		return nil, fmt.Errorf("Failed turning tokens slice into statement creation context, failed parsing statement parameters: %w", err)
+		return BasicStatementCreationContext{}, fmt.Errorf("Failed turning tokens slice into statement creation context, failed parsing statement parameters: %w", err)
+	}
+	
+	if offset != 0 {
+		context.parameters = defaultParameters
+	} else {
+		parameters, err := bps.ParameterizeBlock(parameterSlice, StatementParametersAssertionsSeparators, StatementParametersAssertionsPartsSeparators, false, func(x int) string {
+			return fmt.Sprint(x)
+		})
+		
+		if err != nil {
+			return BasicStatementCreationContext{}, fmt.Errorf("Failed turning source tokens into statement creation context, could not parameterize statements arguements: %w", err)
+		}
 	}
 	
 	return

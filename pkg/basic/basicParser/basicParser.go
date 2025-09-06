@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type StatementParameters = map[string]bts.TokenSlice
+type Parameters = map[string]bts.TokenSlice
 
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error) {
     if len(src) < 2 {
@@ -25,7 +25,7 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
     }
     
     if startIndex == -1 {
-        return 0, nil, fmt.Errorf("failed parsing block: start token '%s' not found", startToken.GetWord())
+        return -1, nil, fmt.Errorf("failed parsing block: start token '%s' not found", startToken.GetWord())
     }
     
     openedCounter := 1
@@ -84,7 +84,7 @@ func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (
 	return result, nil
 }
 
-func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, assertionTokens bts.TokenSlice, singleRightAssertionPart bool, defaultParameters StatementParameters, countParameterParser func(int)string) (result StatementParameters, err error) {
+func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, assertionTokens bts.TokenSlice, singleRightAssertionPart bool, countParameterParser func(int)string) (result Parameters, err error) {
 	if src == nil {
 		return nil, fmt.Errorf("Source tokens slice cannot be nil")
 	}
@@ -99,11 +99,7 @@ func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, asser
 		return nil, fmt.Errorf("Could not parameterize block, no assertions received from the block")
 	}
 	
-	result = StatementParameters{}
-	
-	for k, v := range defaultParameters {
-		result[k] = v
-	}
+	result = Parameters{}
 	
 	var (
 		assertionParts []bts.TokenSlice
