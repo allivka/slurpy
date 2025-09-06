@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+type StatementParameters = map[string]bts.TokenSlice
+
 func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int, bts.TokenSlice, error){ 
 	
 	if len(src) < 2 {
@@ -84,4 +86,62 @@ func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (
 	}
 	
 	return result, nil
+}
+
+func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, assertionTokens bts.TokenSlice, singleRightAssertionPart bool, defaultParameters StatementParameters, countParameterParser func(int)string) (result StatementParameters, err error) {
+	if src == nil {
+		return nil, fmt.Errorf("Source tokens slice cannot be nil")
+	}
+	
+	assertions, err := ParseBlockWithSeparators(src, separatorTokens)
+	
+	if err != nil {
+		return nil, fmt.Errorf("Could not parameterize block, error during separating assertions: %w", err)
+	}
+	
+	if len(assertions) == 0 {
+		return nil, fmt.Errorf("Could not parameterize block, no assertions received from the block")
+	}
+	
+	result = StatementParameters{}
+	
+	for k, v := range defaultParameters {
+		result[k] = v
+	}
+	
+	var (
+		assertionParts []bts.TokenSlice
+	)
+	
+	for i, assertion := range assertions {
+		assertionParts, err = ParseBlockWithSeparators(assertion, assertionTokens)
+		
+		if err != nil {
+			return nil, fmt.Errorf("Could not parameterize block, assertion parts separating failed: %w", err)
+		}
+		
+		if len(assertionParts) == 0 {
+			return nil, fmt.Errorf("Could not parameterize block, empty assertion somehow")
+		}
+		
+		if len(assertionParts) == 1 {
+			result[countParameterParser(i)] = assertionParts[0]
+			continue
+		}
+		
+		if len(assertionParts) == 2 && len(assertionParts[0]) == 1 {
+			if singleRightAssertionPart && len(assertionParts[1]) > 1 {
+				return nil, fmt.Errorf("Could not parameterize block, few tokens on the right side of the assertion are not allowed: '%+v'", assertion)
+			} else if len(assertionParts[1]) == 0 {
+				return nil, fmt.Errorf("Could not parameterize block, empty right side of the assertion '%+v'", assertion)
+			}
+			
+			result[assertionParts[0][0].GetWord()] = assertionParts[1]
+			continue
+		}
+		
+		return nil, fmt.Errorf("Could not parameterize block, invalid parameter settings syntax")
+	}
+	
+	return
 }
