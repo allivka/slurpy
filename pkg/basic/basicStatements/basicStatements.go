@@ -21,7 +21,6 @@ type BasicStatementCreationContext struct {
 	parameters    bps.Parameters
 	header        []bts.TokenSlice
 	body          bts.TokenSlice
-	context       Context
 }
 
 func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.Token, defaultBodyIdentificator bts.Token, defaultParameters bps.Parameters, statementIdentificators map[string]bts.Token) (context BasicStatementCreationContext, err error) {
