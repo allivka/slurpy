@@ -20,7 +20,7 @@ func (s Identificator) NewFromWord(word string) (bts.Token, error) {
 		return Identificator{BasicToken: t.(bts.BasicToken)}, nil
 	}
 
-	return Identificator{}, fmt.Errorf("Failed creating new identificator token from word '%s': %w", word, err)
+	return Identificator{}, fmt.Errorf("failed creating new identificator token from word '%s': %w", word, err)
 }
 
 type Integer struct {
@@ -31,7 +31,7 @@ type Integer struct {
 func (i Integer) NewFromWord(word string) (bts.Token, error) {
 	temp, err := strconv.ParseInt(word, 10, 64)
 	if err != nil {
-		return Integer{}, fmt.Errorf("Failed creating new integer token from word '%s': %w", word, err)
+		return Integer{}, fmt.Errorf("failed creating new integer token from word '%s': %w", word, err)
 	}
 
 	t, _ := bts.BasicToken{}.NewFromWord(word)
@@ -50,7 +50,7 @@ type Float struct {
 func (f Float) NewFromWord(word string) (bts.Token, error) {
 	temp, err := strconv.ParseFloat(word, 64)
 	if err != nil {
-		return Float{}, fmt.Errorf("Failed creating new float token from word '%s': %w", word, err)
+		return Float{}, fmt.Errorf("failed creating new float token from word '%s': %w", word, err)
 	}
 
 	t, _ := bts.BasicToken{}.NewFromWord(word)

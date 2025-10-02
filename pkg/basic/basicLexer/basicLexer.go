@@ -18,7 +18,7 @@ func Lex(src words.WordSlice, tokenizer TokenDetector) (result bts.TokenSlice, e
 		result[i], err = tokenizer.TokenFromWord(v)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed basic lexing of words, failed getting token from word '%s': %w", v, err)
+			return nil, fmt.Errorf("failed basic lexing of words, failed getting token from word '%s': %w", v, err)
 		}
 	}
 

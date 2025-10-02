@@ -21,7 +21,7 @@ type tokenizer struct{}
 func (tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 
 	if len(word) == 0 {
-		return nil, errors.New("Impossible to tokenize empty word")
+		return nil, errors.New("impossible to tokenize empty word")
 	}
 
 	if v, ok := SpecifiedTokens[word]; ok {
@@ -29,7 +29,7 @@ func (tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 		token, err = token.NewFromWord(word)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed tokenizing word '%s' as specified token:  %w", word, err)
+			return nil, fmt.Errorf("failed tokenizing word '%s' as specified token:  %w", word, err)
 		}
 
 		return token, nil
@@ -38,7 +38,7 @@ func (tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 	wordType, err := wp.GetWordType(word)
 
 	if err != nil || wordType == wp.Empty || wordType == wp.Invalid {
-		return nil, fmt.Errorf("Failed tokenizing word '%s' is either unknown or invalid or empty:  %w", word, err)
+		return nil, fmt.Errorf("failed tokenizing word '%s' is either unknown or invalid or empty:  %w", word, err)
 	}
 
 	switch wordType {
@@ -50,7 +50,7 @@ func (tokenizer) TokenFromWord(word string) (token bts.Token, err error) {
 		token = tokens.Identificator{}
 
 	default:
-		return nil, fmt.Errorf("Failed tokenizing word '%s' is either unknown or invalid or empty: %w", word, err)
+		return nil, fmt.Errorf("failed tokenizing word '%s' is either unknown or invalid or empty: %w", word, err)
 
 	}
 

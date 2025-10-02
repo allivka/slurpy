@@ -29,7 +29,7 @@ func ValidateWords(words WordSlice) (err error) {
 		wt, err = GetWordType(word)
 
 		if wt == Invalid || wt == Empty || err != nil {
-			return fmt.Errorf("Detected invalid word '%s': %w", word, err)
+			return fmt.Errorf("detected invalid word '%s': %w", word, err)
 		}
 	}
 
@@ -57,7 +57,7 @@ func GetWordType(word string) (result WordType, err error) {
 	runes := []rune(word)
 
 	if unicode.IsDigit(runes[0]) {
-		return Invalid, fmt.Errorf("Invalid word '%s' starts from a digit but can't be parsed as an integer or float", word)
+		return Invalid, fmt.Errorf("invalid word '%s' starts from a digit but can't be parsed as an integer or float", word)
 	}
 
 	isIdentificator := true
@@ -92,5 +92,5 @@ func GetWordType(word string) (result WordType, err error) {
 		return SingleOperator, nil
 	}
 
-	return Invalid, fmt.Errorf("Word '%s' is invalid", word)
+	return Invalid, fmt.Errorf("word '%s' is invalid", word)
 }

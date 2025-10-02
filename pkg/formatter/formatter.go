@@ -47,7 +47,7 @@ func Format(t lineSlice) (lineSlice, error) {
 		}
 
 		if i == len(lines)-1 {
-			return nil, fmt.Errorf("No line for concatenation with \\ operator at line %d", i+1)
+			return nil, fmt.Errorf("no line for concatenation with \\ operator at line %d", i+1)
 		}
 
 		lines[i+1] = strings.Join(strings.Fields(strings.TrimSpace(string(line[:len(line)-1])+lines[i+1])), " ")
@@ -65,7 +65,7 @@ func separateWords(word string) (result wp.WordSlice, err error) {
 	lastType, err := wp.GetWordType(string(runes[0]))
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+		return nil, fmt.Errorf("failed separating words: invalid word: %w", err)
 	}
 
 	var (
@@ -89,7 +89,7 @@ func separateWords(word string) (result wp.WordSlice, err error) {
 			}
 
 			if err != nil {
-				return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+				return nil, fmt.Errorf("failed separating words: invalid word: %w", err)
 			}
 		}
 
@@ -108,20 +108,20 @@ func separateWords(word string) (result wp.WordSlice, err error) {
 		currentType, err := wp.GetWordType(string(v))
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+			return nil, fmt.Errorf("failed separating words: invalid word: %w", err)
 		}
 
 		nextType, err := wp.GetWordType(string(words[i+1]))
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+			return nil, fmt.Errorf("failed separating words: invalid word: %w", err)
 		}
 
 		for j := i + 1; j < len(words) && currentType != wp.Operator && nextType != wp.Operator && currentType != wp.SingleOperator && nextType != wp.SingleOperator; j++ {
 			nextType, err = wp.GetWordType(words[j])
 
 			if err != nil {
-				return nil, fmt.Errorf("Failed separating words: invalid word: %w", err)
+				return nil, fmt.Errorf("failed separating words: invalid word: %w", err)
 			}
 
 			v += words[j]
@@ -162,7 +162,7 @@ func WordsFromSrcString(src string) (wp.WordSlice, error) {
 	err = wp.ValidateWords(buff)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed retrieving words from source: %w", err)
+		return nil, fmt.Errorf("failed retrieving words from source: %w", err)
 	}
 
 	copy(words, buff)

@@ -55,11 +55,11 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (result []bts.TokenSlice, err error) {
 
 	if src == nil {
-		return nil, fmt.Errorf("Source tokens slice cannot be nil")
+		return nil, fmt.Errorf("source tokens slice cannot be nil")
 	}
 
 	if separatorTokens == nil {
-		return nil, fmt.Errorf("Separator tokens cannot be nil")
+		return nil, fmt.Errorf("separator tokens cannot be nil")
 	}
 
 	var start int
@@ -86,17 +86,17 @@ func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (
 
 func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, assertionTokens bts.TokenSlice, singleRightAssertionPart bool, countParameterParser func(int) string) (result Parameters, err error) {
 	if src == nil {
-		return nil, fmt.Errorf("Source tokens slice cannot be nil")
+		return nil, fmt.Errorf("source tokens slice cannot be nil")
 	}
 
 	assertions, err := ParseBlockWithSeparators(src, separatorTokens)
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not parameterize block, error during separating assertions: %w", err)
+		return nil, fmt.Errorf("could not parameterize block, error during separating assertions: %w", err)
 	}
 
 	if len(assertions) == 0 {
-		return nil, fmt.Errorf("Could not parameterize block, no assertions received from the block")
+		return nil, fmt.Errorf("could not parameterize block, no assertions received from the block")
 	}
 
 	result = Parameters{}
@@ -109,11 +109,11 @@ func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, asser
 		assertionParts, err = ParseBlockWithSeparators(assertion, assertionTokens)
 
 		if err != nil {
-			return nil, fmt.Errorf("Could not parameterize block, assertion parts separating failed: %w", err)
+			return nil, fmt.Errorf("could not parameterize block, assertion parts separating failed: %w", err)
 		}
 
 		if len(assertionParts) == 0 {
-			return nil, fmt.Errorf("Could not parameterize block, empty assertion somehow")
+			return nil, fmt.Errorf("could not parameterize block, empty assertion somehow")
 		}
 
 		if len(assertionParts) == 1 {
@@ -123,16 +123,16 @@ func ParameterizeBlock(src bts.TokenSlice, separatorTokens bts.TokenSlice, asser
 
 		if len(assertionParts) == 2 && len(assertionParts[0]) == 1 {
 			if singleRightAssertionPart && len(assertionParts[1]) > 1 {
-				return nil, fmt.Errorf("Could not parameterize block, few tokens on the right side of the assertion are not allowed: '%+v'", assertion)
+				return nil, fmt.Errorf("could not parameterize block, few tokens on the right side of the assertion are not allowed: '%+v'", assertion)
 			} else if len(assertionParts[1]) == 0 {
-				return nil, fmt.Errorf("Could not parameterize block, empty right side of the assertion '%+v'", assertion)
+				return nil, fmt.Errorf("could not parameterize block, empty right side of the assertion '%+v'", assertion)
 			}
 
 			result[assertionParts[0][0].GetWord()] = assertionParts[1]
 			continue
 		}
 
-		return nil, fmt.Errorf("Could not parameterize block, invalid parameter settings syntax")
+		return nil, fmt.Errorf("could not parameterize block, invalid parameter settings syntax")
 	}
 
 	return
