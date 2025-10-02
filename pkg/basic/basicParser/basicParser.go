@@ -55,11 +55,11 @@ func ParseBlockBetween(src bts.TokenSlice, startToken, endToken bts.Token) (int,
 func ParseBlockWithSeparators(src bts.TokenSlice, separatorTokens []bts.Token) (result []bts.TokenSlice, err error) {
 
 	if src == nil {
-		return nil, fmt.Errorf("source tokens slice cannot be nil")
+		return nil, nil
 	}
 
 	if separatorTokens == nil {
-		return nil, fmt.Errorf("separator tokens cannot be nil")
+		return []bts.TokenSlice{src}, nil
 	}
 
 	var start int

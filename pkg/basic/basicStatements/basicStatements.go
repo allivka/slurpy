@@ -19,18 +19,18 @@ type Statement interface {
 type BasicStatementCreationContext struct {
 	identificator bts.Token
 	parameters    bps.Parameters
-	header        bts.TokenSlice
-	body          []BasicStatementCreationContext
+	header        []bts.TokenSlice
+	body          bts.TokenSlice
 	context       Context
 }
 
 func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.Token, defaultBodyIdentificator bts.Token, defaultParameters bps.Parameters, statementIdentificators map[string]bts.Token) (context BasicStatementCreationContext, err error) {
-	if src == nil || len(src) == 0 {
-		return BasicStatementCreationContext{}, errors.New("Invalid src parameter for creation of BasicStatementCreationContext for later statement creation")
+	if len(src) == 0 {
+		return BasicStatementCreationContext{}, errors.New("invalid src parameter for creation of BasicStatementCreationContext for later statement creation")
 	}
 
 	if defaultIdentificator == nil {
-		return BasicStatementCreationContext{}, errors.New("Default identificator token for statement processing")
+		return BasicStatementCreationContext{}, errors.New("default identificator token for statement processing")
 	}
 
 	if defaultBodyIdentificator == nil {
@@ -51,7 +51,7 @@ func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.
 	offset, parameterSlice, err := bps.ParseBlockBetween(src[1:], lexer.SpecifiedTokens[string(statementParameterTokenOpenWord)], lexer.SpecifiedTokens[string(statementParameterTokenCloseWord)])
 
 	if err != nil {
-		return BasicStatementCreationContext{}, fmt.Errorf("Failed turning tokens slice into statement creation context, failed parsing statement parameters: %w", err)
+		return BasicStatementCreationContext{}, fmt.Errorf("failed turning tokens slice into statement creation context, failed parsing statement parameters: %w", err)
 	}
 
 	if offset != 0 {
@@ -62,9 +62,28 @@ func TokensToBasicStatementContext(src bts.TokenSlice, defaultIdentificator bts.
 		})
 
 		if err != nil {
-			return BasicStatementCreationContext{}, fmt.Errorf("Failed turning source tokens into statement creation context, could not parameterize statements arguments: %w", err)
+			return BasicStatementCreationContext{}, fmt.Errorf("failed turning source tokens into statement creation context, could not parameterize statements arguments: %w", err)
 		}
+		
+		context.parameters = parameters
+		
 	}
+	
+	bodyOff, bodySlice, err := bps.ParseBlockBetween(src[1+len(parameterSlice):], lexer.SpecifiedTokens[string(statementBodyTokenOpenWord)], lexer.SpecifiedTokens[string(statementBodyTokenCloseWord)])
+	
+	if err != nil {
+		return BasicStatementCreationContext{}, fmt.Errorf("failed turning source tokens into statement creation context, could not retrieve a body for the statement: %w", err)
+	}
+	
+	context.body = bodySlice
+	
+	header, err := bps.ParseBlockWithSeparators(src[1+len(parameterSlice):1+len(parameterSlice)+bodyOff], StatementHeaderSeparators)
+	
+	if err != nil {
+		return BasicStatementCreationContext{}, fmt.Errorf("failed turning source tokens into statement creation context, could not divide statement header into parts: %w", err)
+	}
+	
+	context.header = header
 
-	return
+	return context, nil
 }
