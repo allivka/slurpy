@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	statementParameterTokenOpenWord = '['
+	statementParameterTokenOpenWord  = '['
 	statementParameterTokenCloseWord = ']'
 )
 
@@ -18,6 +18,4 @@ var (
 	StatementParametersAssertionsPartsSeparators = bts.TokenSlice{
 		lexer.SpecifiedTokens["="],
 	}
-
 )
-

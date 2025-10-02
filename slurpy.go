@@ -19,20 +19,17 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	
+
 	fmt.Println(formatted)
-	
+
 	lexed, err := lexer.Lex(formatted)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	
-	
+
 	for _, token := range lexed {
 		fmt.Printf("%+v\n", token)
 	}
-	
-	
 
 }

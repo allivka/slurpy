@@ -4,26 +4,26 @@ import (
 	bts "github.com/allivka/slurpy/pkg/basic/basicTokens"
 )
 
-var OperatorTokens = bts.TokenMap {
-	"+": Plus{},
-	"-": Minus{},
+var OperatorTokens = bts.TokenMap{
+	"+":  Plus{},
+	"-":  Minus{},
 	"++": Increment{},
 	"--": Decrement{},
-	"*": Multiply{},
+	"*":  Multiply{},
 	"**": Power{},
-	"/": Divide{},
-	"%": Module{},
-	";": Eol{},
+	"/":  Divide{},
+	"%":  Module{},
+	";":  Eol{},
 }
 
-var SingleOperatorTokens = bts.TokenMap {
-	"(": BracketCircleOpen{},
-	")": BracketCircleClose{},
-	"[": BracketSquareOpen{},
-	"]": BracketSquareClose{},
-	"{": BracketFigureOpen{},
-	"}": BracketFigureClose{},
-	"'": SingleQuote{},
+var SingleOperatorTokens = bts.TokenMap{
+	"(":  BracketCircleOpen{},
+	")":  BracketCircleClose{},
+	"[":  BracketSquareOpen{},
+	"]":  BracketSquareClose{},
+	"{":  BracketFigureOpen{},
+	"}":  BracketFigureClose{},
+	"'":  SingleQuote{},
 	"\"": DoubleQuote{},
 }
 
